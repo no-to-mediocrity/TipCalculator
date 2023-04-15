@@ -9,19 +9,25 @@ import kotlin.jvm.internal.Intrinsics.Kotlin
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        super.onCreate(savedInstanceState)
 
         binding.calculateButton.setOnClickListener {
-            calculateTip()
+            if (binding.costOfService.text.toString() != "") {
+                calculateTip()
+            }
         }
 
     //    setContentView(R.layout.activity_main)
     }
+
+
     fun calculateTip() {
-        val stringInputField = binding.costOfService.text.toString()
-        val amount = stringInputField.toDouble()
+        val editText = binding.costOfService
+        val inputField = binding.costOfService.text.toString()
+
+        val amount = inputField.toDouble()
         val selectedTip = binding.tipOptions.checkedRadioButtonId
         val tipPercent = when (selectedTip) {
             R.id.tip_option_twenty_percent -> 0.2
@@ -32,12 +38,15 @@ class MainActivity : AppCompatActivity() {
         }
         var tip = amount * tipPercent
         if (binding.roundUpSwitch.isChecked) {
-            tip = kotlin.math.ceil(tip)
+            tip = kotlin.math.floor(tip)
         }
         val formattedTip = NumberFormat.getCurrencyInstance().format(tip)
         binding.tipResult.text = getString(R.string.tip_amount, formattedTip)
     }
+
+
 }
+
 
 
 
